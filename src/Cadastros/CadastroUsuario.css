@@ -67,4 +67,17 @@ body {
 
 #btnEntrar:hover {
     background-color: #333333;
+    
+}
+
+
+
+
+@media screen and (max-width: 768px) {
+    .cadastro-usuario {
+        width: 90vh;
+        height: auto;
+        padding: 2vh;
+    }
+    
 }
