@@ -1,0 +1,207 @@
+body {
+    min-height: 500px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    margin: 0;
+}
+
+html, body {
+    min-height: 600px;
+    height: 100vh;
+}
+
+.error-message{
+    color: black;
+    font-size: 16px;
+    font-family: sans-serif;
+}
+
+.cadastro-usuario{
+    width: 80vh;
+    height: 40vh;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+    padding: 2vh;
+    display: grid;
+    align-items: center;
+}
+
+.cadastro-topo {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3vh;
+}
+
+#h1Cadastro {
+    font-size: 3vh;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #000000;
+    margin: 0;
+}
+
+.cadastro-corpo {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2vh;
+}
+
+.campo-cadastro {
+    width: 30vh;
+    height: 4vh;
+    border-radius: 5px;
+    border: 1px solid black;
+    font-size: 1.5vh;
+    padding: 0 1vh;
+}
+
+  #btnCadastrar {
+      width: 100%;
+      max-width: 300px;
+      height: 40px;
+      border-radius: 5px;
+      border: 1px solid black;
+      font-size: 16px;
+      background-color: #000000;
+      color: #ffffff;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      margin-top: 10px;
+      cursor: pointer;
+  }
+  
+
+
+@media screen and (min-width: 10px) and (max-width: 768px) {
+    .cadastro-usuario {
+        width: 100%;
+        padding: 1vh;
+        height: 50vh;
+    }
+
+    .campo-cadastro{
+        width: 80%;
+        height: 5vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 2vh;
+        font-size: 1.3vh;
+    }
+
+    #btnCadastrar{
+        width: 100%;
+        max-width: 300px;
+        height: 40px;
+        border-radius: 5px;
+        border: 1px solid black;
+        font-size: 16px;
+        color: #ffffff;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+    
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .cadastro-usuario {
+        width: 50vw;
+        padding: 1vh;
+        height: 50vh;
+    } 
+    
+    .campo-cadastro{
+        width: 70%;
+        height: 5vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 2vh;
+    }
+
+    #btnCadastrar{
+        width: 100%;
+        width: 100vw;
+        height: 40px;
+        border-radius: 5px;
+        border: 1px solid black;
+        font-size: 16px;
+        color: #ffffff;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+}
+
+@media screen and (min-width: 1025px) and (max-width: 1440px) {
+    .cadastro-usuario {
+        width: 50vw;
+        padding: 1vh;
+        height: 50vh;
+    }   
+
+    .campo-cadastro{
+        width: 50%;
+        height: 5vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 2vh;
+    }
+
+    #btnCadastrar{
+        width: 100%;
+        width: 100vw;
+        height: 40px;
+        border-radius: 5px;
+        border: 1px solid black;
+        font-size: 16px;
+        color: #ffffff;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+}
+
+@media screen and (min-width: 1441px) and (max-width: 76008px) {
+    .cadastro-usuario {
+        width: 30w;
+        padding: 1vh;
+        height: 50vh;
+    }   
+
+    .campo-cadastro{
+        width: 50%;
+        height: 5vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 2vh;
+    }
+
+        #btnCadastrar{
+        width: 100%;
+        width: 100vw;
+        height: 40px;
+        border-radius: 5px;
+        border: 1px solid black;
+        font-size: 16px;
+        color: #ffffff;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+}

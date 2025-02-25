@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import Login from './Login/Login'
+import Login from './Telas/Login/Login'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import CadastroUsuario from './Cadastros/CadastroUsuario'
+import CadastroUsuario from './Telas/Cadastros/CadastroUsuario'
+import EsqueceuSenha from './Telas/EsqueceuSenha/EsqueceuSenha';
+import RedefinirSenha from './Telas/RedefinirSenha/RedefinirSenha';
 
 function App() {
   return (
@@ -12,6 +12,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/CadastroUsuario" element={<CadastroUsuario />} />
+        <Route path="/EsqueceuSenha" element={<EsqueceuSenha />} />
+        <Route path="/RedefinirSenha" element={<RedefinirSenha />} />
       </Routes>
     </Router>
   )

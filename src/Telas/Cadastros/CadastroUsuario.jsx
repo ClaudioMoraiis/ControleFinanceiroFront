@@ -34,7 +34,7 @@ export default function CadastroUsuario() {
 
         console.log("Clicou no botão");
 
-        fetch("http://localhost:8080/usuario/cadastrar", {
+        fetch("http://192.168.18.22:8080/usuario/cadastrar", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -47,15 +47,17 @@ export default function CadastroUsuario() {
         })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error('Erro na requisição');
+                    return response.text().then((errorMessage) => {
+                        throw new Error(errorMessage);
+                    });
                 }
-
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
+                // First check if there's actually JSON content
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
                     return response.json();
-                } else {
-                    return response.text();
                 }
+                // If not JSON, just return the text
+                return response.text();
             })
             .then((data) => {
                 console.log(data);
@@ -68,12 +70,11 @@ export default function CadastroUsuario() {
             })
             .catch((error) => {
                 console.error('Erro na requisição:', error);
-                setError('Erro na requisição');
+                setError(error.message || 'Erro na requisição');
                 setLoading(false);
                 setSuccess(false);
                 return false;
             });
-
         console.log(senha, usuario, Email);
     };
 
@@ -92,7 +93,7 @@ export default function CadastroUsuario() {
         return (
             <div className="cadastro-usuario">
                 <div className="cadastro-topo">
-                    <h1 id="h1Login">Cadastro</h1>
+                    <h1 id="h1Cadastro">Cadastro</h1>
                 </div>
 
                 <div className="cadastro-corpo">
@@ -119,10 +120,11 @@ export default function CadastroUsuario() {
                         onChange={(e) => setSenha(e.target.value)}
                     />
                     <button
-                        id="btnEntrar"
+                        className="campo-cadastro"
+                        id="btnCadastrar"
                         onClick={handleSubmit}
                     >
-                        Entrar
+                        Cadastrar
                     </button>
                 </div>
             </div>
