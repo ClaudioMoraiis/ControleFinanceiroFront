@@ -8,6 +8,7 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [successLoginn, setSuccessLogin] = useState(false);
 
 
     const navigate = useNavigate();
@@ -64,15 +65,23 @@ export default function Login() {
                     return response.json();
                 } else {
                     return response.text();
-                }
-            })
-            .then((data) => {
-                console.log("Dados recebidos:", data);
-                setError(data);
-                setSuccess(true);
-                setLoading(false);
-                return true;
-            })
+        }
+    })
+    .then((data) => {
+        console.log("Dados recebidos:", data);
+        setError(data);
+        setSuccess(true);
+        setLoading(false);
+    
+        localStorage.setItem("email", JSON.stringify(email));
+        localStorage.setItem("senha", JSON.stringify(senha));
+    
+        setEmail("");
+        setSenha("");
+    
+        setSuccessLogin(true);
+        return true;
+    })
             .catch((error) => {
                 console.error('Erro na requisição:', error.message);
                 setError(`${error.message}`);
@@ -82,8 +91,9 @@ export default function Login() {
             });
     }
 
-
-    console.log(senha, email);
+    if (successLoginn) {
+        navigate("/Home");
+    }
 
     return (
         <div className="login">

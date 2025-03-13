@@ -63,6 +63,7 @@ export default function RedefinirSenha() {
             setConfirmarSenha('');
             setSenha('');
             setToken('');
+            
         } catch (error) {
             console.error('Erro na requisição:', error.message);
             setError(error.message);
