@@ -1,126 +1,173 @@
 import React, { useState } from 'react';
-import './Contas.css'; // Importando o CSS
-  const Contas = () => {
-    const [contas, setContas] = useState([]);
-    const [nomeConta, setNomeConta] = useState('');
-    const [valorConta, setValorConta] = useState('');
-    const [tipoConta, setTipoConta] = useState('mensal');
-    const [busca, setBusca] = useState('');
-    const [mostrarPainel, setMostrarPainel] = useState(false);
-    const [alterouConta, setAlterouConta] = useState(false);
+import './Contas.css';
 
-    const handleNomeContaChange = (event) => {
-      setNomeConta(event.target.value);
-    };
+const Contas = () => {
+  const [contas, setContas] = useState([]);
+  const [nomeConta, setNomeConta] = useState('');
+  const [valorConta, setValorConta] = useState('');
+  const [tipoConta, setTipoConta] = useState('Mensal');
+  const [busca, setBusca] = useState('');
+  const [mostrarPainel, setMostrarPainel] = useState(false);
+  const [alterouConta, setAlterouConta] = useState(false);
+  const [dataConta, setDataConta] = useState('');
 
-    const handleValorContaChange = (event) => {
-      setValorConta(event.target.value);
-    };
+  const handleNomeContaChange = (event) => setNomeConta(event.target.value);
+  const handleValorContaChange = (event) => setValorConta(event.target.value);
 
-    const handleTipoContaChange = (event) => {
-      setTipoConta(event.target.value);
-    };
+  const handleTipoContaChange = (event) => {
+    const novoTipo = event.target.value;
+    setTipoConta(novoTipo); 
+    console.log(novoTipo); 
+  };
+  
+  const handleBuscaChange = (event) => setBusca(event.target.value);
+  const handleDataContaChange = (event) => setDataConta(event.target.value);
 
-    const handleBuscaChange = (event) => {
-      setBusca(event.target.value);
-    };
+  const formatarData = (data, formato) => {
+    if (!data) return "";
 
-    const handleAdicionarConta = () => {
-      if (nomeConta && valorConta) {
-        const novaConta = { nome: nomeConta, valor: parseFloat(valorConta), tipo: tipoConta };
-    
-        if (alterouConta !== false) {
-          const novasContas = [...contas];
-          novasContas[alterouConta] = novaConta;
-          setContas(novasContas);
-          setAlterouConta(false);
-        } else {
-          setContas([...contas, novaConta]);
-        }
-    
-        setNomeConta('');
-        setValorConta('');
-        setTipoConta('mensal');
-        setMostrarPainel(false);
+    let partes;
+
+    if (data.includes("-")) {
+      partes = data.split("-");
+      if (partes.length !== 3) return data;
+      if (formato === "dd/MM/yyyy") {
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
       }
-    };    
+    } else if (data.includes("/")) {
+      partes = data.split("/");
+      if (partes.length !== 3) return data;
+      if (formato === "yyyy-MM-dd") {
+        return `${partes[2]}-${partes[1]}-${partes[0]}`;
+      }
+    }
 
-    const handleLimparCampo = () => {
-      setNomeConta('');
-      setValorConta('');
-      setTipoConta('mensal');
-    };
+    return data;
+  };
 
-    const handleExcluirConta = (index) => {
-      const novasContas = contas.filter((_, i) => i !== index);
-      setContas(novasContas);
-    };
+  const handleAdicionarConta = () => {
+    const dataFormatada = formatarData(dataConta, "yyyy-MM-dd");
+  
+    fetch("http://192.168.18.22:8080/contas/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        usuarioID: 1,
+        nome: nomeConta,
+        valor: parseFloat(valorConta),
+        tipo: tipoConta,
+        data: dataFormatada,
+      }),
+    })
+      .then(async (response) => {
+        const text = await response.text(); 
+  
+        try {
+          const data = JSON.parse(text);
+          console.log("Sucesso:", data);
+          setContas([...contas, { 
+            nome: nomeConta, 
+            valor: parseFloat(valorConta), 
+            tipo: tipoConta, 
+            dataConta: dataFormatada 
+          }]);
+        } catch (error) {
+          console.error("Resposta não é um JSON válido:", text);
+        }
+      })
+      .catch((error) => {
+        console.error("Erro ao cadastrar conta:", error);
+      });
+  
+    setNomeConta("");
+    setValorConta("");
+    setTipoConta("Mensal");
+    setDataConta("");
+    setMostrarPainel(false);
+  };  
 
-    const handleAlterarConta = (index) => {
-      const contaSelecionada = contas[index];
-      setNomeConta(contaSelecionada.nome);
-      setValorConta(contaSelecionada.valor);
-      setTipoConta(contaSelecionada.tipo);
-      setMostrarPainel(true);
-      
-      setAlterouConta(index);
-    };
-    
+  const handleLimparCampo = () => {
+    setNomeConta('');
+    setValorConta('');
+    setTipoConta('Mensal');
+    setDataConta('');
+  };
 
-    const contasFiltradas = contas.filter((conta) =>
-      conta.nome.toLowerCase().includes(busca.toLowerCase())
-    );
+  const handleExcluirConta = (index) => {
+    const novasContas = contas.filter((_, i) => i !== index);
+    setContas(novasContas);
+  };
 
-    return (
-      <div className="contas-container">
-        <h2>Gerenciar Contas</h2>
+  const handleAlterarConta = (index) => {
+    const contaSelecionada = contas[index];
+    setNomeConta(contaSelecionada.nome);
+    setValorConta(contaSelecionada.valor);
+    setTipoConta(contaSelecionada.tipo);
+    setDataConta(contaSelecionada.dataConta);
+    setMostrarPainel(true);
+    setAlterouConta(index);
+  };
 
-        {/* Campo de Busca */}
-        <div className="input-container">
-          <input
-            type="text"
-            placeholder="Buscar Conta"
-            value={busca}
-            onChange={handleBuscaChange}
-            className="input"
-          />
-        </div>
+  const contasFiltradas = contas.filter((conta) =>
+    conta.nome.toLowerCase().includes(busca.toLowerCase())
+  );
 
-        {/* Lista de Contas Filtradas */}
-        <div className="contas-list">
-          {contasFiltradas.length === 0 ? (
-            <p className="no-results">Nenhuma conta encontrada.</p>
-          ) : (
-            contasFiltradas.map((conta, index) => (
-              <div className="conta-item" key={index}>
-                <div className="conta-info">
-                  <strong>{conta.nome}</strong> - R$ {conta.valor.toFixed(2)}{' '}
-                  <em>({conta.tipo === 'mensal' ? 'Mensal' : 'Extra'})</em>
-                </div>
-                <div className="conta-buttons">
-                  <button 
-                    onClick={() => handleAlterarConta(index)}
-                    className="button edit-button"
-                  >
-                    Alterar
-                  </button>
-                  <button 
-                    onClick={() => handleExcluirConta(index)}
-                    className="button delete-button"
-                  >
-                    Excluir
-                  </button>
-                </div>
+  return (
+    <div className="contas-container">
+      <h2>Gerenciar Contas</h2>
+
+      {/* Campo de Busca */}
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="Buscar Conta"
+          value={busca}
+          onChange={handleBuscaChange}
+          className="input"
+        />
+      </div>
+
+      {/* Lista de Contas Filtradas */}
+      <div className="contas-list">
+        {contasFiltradas.length === 0 ? (
+          <p className="no-results">Nenhuma conta encontrada.</p>
+        ) : (
+          contasFiltradas.map((conta, index) => (
+            <div className="conta-item" key={index}>
+              <div className="conta-info">
+                <strong>{conta.nome}</strong> - R$ {conta.valor.toFixed(2)}{' '}
+                <em>({conta.tipo})</em>
+                <br />
+                <em>Data: {formatarData(conta.dataConta, "dd/MM/yyyy")}</em>
+                <br />
               </div>
-            ))
-          )}
-        </div>
+              <div className="conta-buttons">
+                <button
+                  onClick={() => handleAlterarConta(index)}
+                  className="button edit-button"
+                >
+                  Alterar
+                </button>
+                <button
+                  onClick={() => handleExcluirConta(index)}
+                  className="button delete-button"
+                >
+                  Excluir
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Botão para Adicionar Conta */}
       <div className="button-container">
-        {/* Botão para Adicionar Conta */}
         <button
           onClick={() => {
             setAlterouConta(false);
-            setMostrarPainel(true)
+            setMostrarPainel(true);
           }}
           className="button"
         >
@@ -152,9 +199,17 @@ import './Contas.css'; // Importando o CSS
               onChange={handleTipoContaChange}
               className="input"
             >
-              <option value="mensal">Mensal</option>
-              <option value="extra">Extra</option>
+              <option value="Mensal">Mensal</option>
+              <option value="Extra">Extra</option>
             </select>
+            <label>{tipoConta === "Mensal" ? "Data vencimento" : "Data pagamento"}</label>
+            <input
+              type="date"
+              placeholder="Data de Vencimento"
+              className="input"
+              value={dataConta}
+              onChange={handleDataContaChange}
+            />
             <div className="painel-buttons">
               <button onClick={handleAdicionarConta} className="button">
                 Salvar
@@ -163,8 +218,8 @@ import './Contas.css'; // Importando o CSS
                 onClick={() => {
                   handleLimparCampo();
                   setMostrarPainel(false);
-                }}                
-                className="button"                
+                }}
+                className="button"
               >
                 Cancelar
               </button>

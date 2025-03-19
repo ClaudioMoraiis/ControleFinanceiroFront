@@ -7,19 +7,32 @@ export default function Home() {
     const [isActive, setIsActive] = useState(false);
 
     useEffect(() => {
-        const emailStorage = JSON.parse(localStorage.getItem('usuario'));
+        const emailStorage = JSON.parse(localStorage.getItem('email'));
         if (!emailStorage) return;
 
-        fetch(`http://192.168.18.22:8080/usuario/BuscarUsuarioPorEmail?email=${encodeURIComponent(emailStorage)}`, {
+        fetch(`http://192.168.18.22:8080/usuario/nome-por-email?email=${encodeURIComponent(emailStorage)}`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
         })
         .then(response => {
-            if (!response.ok) throw new Error('Erro na requisição');
-            return response.text();
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+                return response.text();    
         })
-        .then(data => setUserName(data))
-        .catch(error => console.error('Erro na requisição:', error));
+        .then(data => {
+            if (data) {
+                setUserName(data);
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar nome do usuário:', error);
+            setUserName('Usuário');
+        });
     }, []);
 
     return (
@@ -32,7 +45,7 @@ export default function Home() {
                     {isActive && <MenuSuspenso />}
                 </div>
 
-                <h1>Que bom te ver de volta, {userName}</h1>
+                <h1>Que bom te ver de volta, {userName || 'Usuário'}</h1>
                 <p>Gerencie suas finanças com facilidade.</p>
             </div>
         </div>

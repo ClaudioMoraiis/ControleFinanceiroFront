@@ -181,7 +181,11 @@
       height: 80vh; /* Ajusta a altura para ocupar mais da tela */
     }
   
-    .input, .button {
+    .input, .button{
+      font-size: 14px;
+    }
+
+    label{
       font-size: 14px;
     }
   

@@ -9,7 +9,7 @@ export default function Login() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const [successLoginn, setSuccessLogin] = useState(false);
-
+    const [idUsuario, setIdUsuario] = useState('');
 
     const navigate = useNavigate();
     const cadUsuario = () => {
@@ -65,23 +65,25 @@ export default function Login() {
                     return response.json();
                 } else {
                     return response.text();
-        }
-    })
-    .then((data) => {
-        console.log("Dados recebidos:", data);
-        setError(data);
-        setSuccess(true);
-        setLoading(false);
-    
-        localStorage.setItem("email", JSON.stringify(email));
-        localStorage.setItem("senha", JSON.stringify(senha));
-    
-        setEmail("");
-        setSenha("");
-    
-        setSuccessLogin(true);
-        return true;
-    })
+                }
+            })
+            .then((data) => {
+                console.log("Dados recebidos:", data);
+                setError(data);
+                setSuccess(true);
+                setLoading(false);
+
+                localStorage.setItem("email", JSON.stringify(email));
+                localStorage.setItem("senha", JSON.stringify(senha));
+                localStorage.setItem("idUsuario", JSON.stringify(senha));
+
+                setEmail("");
+                setSenha("");
+                setIdUsuario("");
+
+                setSuccessLogin(true);
+                return true;
+            })
             .catch((error) => {
                 console.error('Erro na requisição:', error.message);
                 setError(`${error.message}`);
@@ -90,6 +92,36 @@ export default function Login() {
                 return false;
             });
     }
+
+    useEffect(() => {
+        const emailStorage = JSON.parse(localStorage.getItem('email'));
+        if (!emailStorage) return;
+
+        fetch(`http://192.168.18.22:8080/usuario/idPorEmail?email=${encodeURIComponent(emailStorage)}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return response.text();
+            })
+            .then(data => {
+                if (data) {
+                    setIdUsuario(data);
+                    console.log("ID do usuário:", data);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar nome do usuário:', error);
+                setIdUsuario('Id');
+            });
+    }, []);
 
     if (successLoginn) {
         navigate("/Home");
@@ -105,7 +137,7 @@ export default function Login() {
                 {error && <div className="error-message">{error}</div>}
                 <input
                     className="campo-login"
-                    type="text"
+                    type="email"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
