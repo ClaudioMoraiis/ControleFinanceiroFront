@@ -16,10 +16,10 @@ const Contas = () => {
 
   const handleTipoContaChange = (event) => {
     const novoTipo = event.target.value;
-    setTipoConta(novoTipo); 
-    console.log(novoTipo); 
+    setTipoConta(novoTipo);
+    console.log(novoTipo);
   };
-  
+
   const handleBuscaChange = (event) => setBusca(event.target.value);
   const handleDataContaChange = (event) => setDataConta(event.target.value);
 
@@ -47,7 +47,7 @@ const Contas = () => {
 
   const handleAdicionarConta = () => {
     const dataFormatada = formatarData(dataConta, "yyyy-MM-dd");
-  
+
     fetch("http://192.168.18.22:8080/contas/cadastrar", {
       method: "POST",
       headers: {
@@ -62,31 +62,53 @@ const Contas = () => {
       }),
     })
       .then(async (response) => {
-        const text = await response.text(); 
-  
-        try {
-          const data = JSON.parse(text);
-          console.log("Sucesso:", data);
-          setContas([...contas, { 
-            nome: nomeConta, 
-            valor: parseFloat(valorConta), 
-            tipo: tipoConta, 
-            dataConta: dataFormatada 
-          }]);
-        } catch (error) {
-          console.error("Resposta não é um JSON válido:", text);
-        }
+        const text = await response.text();
+
+        const data = JSON.parse(text);
+        console.log("Sucesso:", data);
+        setContas([...contas, {
+          nome: nomeConta,
+          valor: parseFloat(valorConta),
+          tipo: tipoConta,
+          dataConta: dataFormatada          
+        }]);
       })
       .catch((error) => {
         console.error("Erro ao cadastrar conta:", error);
       });
-  
+
+      window.location.reload();      
+
     setNomeConta("");
     setValorConta("");
     setTipoConta("Mensal");
     setDataConta("");
     setMostrarPainel(false);
-  };  
+  };
+
+  const handleBuscarConta = () => {
+    const idUsuario = JSON.parse(localStorage.getItem('idUsuario'));
+    console.log("ID do usuário:", idUsuario);
+    fetch(`http://192.168.18.22:8080/contas/listarContas?idUsuario=${encodeURIComponent(idUsuario)}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Resposta da API:", data);
+        setContas(data);
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar contas:", error);
+      });
+  };
+
+  window.addEventListener("load", function () {
+    handleBuscarConta();
+  });
 
   const handleLimparCampo = () => {
     setNomeConta('');
@@ -111,7 +133,7 @@ const Contas = () => {
   };
 
   const contasFiltradas = contas.filter((conta) =>
-    conta.nome.toLowerCase().includes(busca.toLowerCase())
+    conta.nomeConta.toLowerCase().includes(busca.toLowerCase())
   );
 
   return (
@@ -137,10 +159,10 @@ const Contas = () => {
           contasFiltradas.map((conta, index) => (
             <div className="conta-item" key={index}>
               <div className="conta-info">
-                <strong>{conta.nome}</strong> - R$ {conta.valor.toFixed(2)}{' '}
+                <strong>{conta.nomeConta}</strong> - R$ {conta.valor.toFixed(2)}{' '}
                 <em>({conta.tipo})</em>
                 <br />
-                <em>Data: {formatarData(conta.dataConta, "dd/MM/yyyy")}</em>
+                <em>Data: {formatarData(conta.data, "dd/MM/yyyy")}</em>
                 <br />
               </div>
               <div className="conta-buttons">
