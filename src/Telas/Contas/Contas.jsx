@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Contas.css';
 
 const Contas = () => {
   const [contas, setContas] = useState([]);
+  const [con_id, setConId] = useState('');
   const [nomeConta, setNomeConta] = useState('');
   const [valorConta, setValorConta] = useState('');
   const [tipoConta, setTipoConta] = useState('Mensal');
@@ -10,18 +11,54 @@ const Contas = () => {
   const [mostrarPainel, setMostrarPainel] = useState(false);
   const [alterouConta, setAlterouConta] = useState(false);
   const [dataConta, setDataConta] = useState('');
+  const [alterando, setAlterando] = useState(false);
+  const [carregando, setCarregando] = useState(false);
+  const [showSuccessPanel, setShowSuccessPanel] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [erroNome, setErroNome] = useState('');
+  const [erroValor, setErroValor] = useState('');
+  const [erroData, setErroData] = useState('');
 
-  const handleNomeContaChange = (event) => setNomeConta(event.target.value);
-  const handleValorContaChange = (event) => setValorConta(event.target.value);
+  const handleNomeContaChange = (event) => {
+    setNomeConta(event.target.value);
+    setErroNome('');
+  };
+
+  const handleValorContaChange = (event) => {
+    setValorConta(event.target.value);
+    setErroValor('');
+  };
 
   const handleTipoContaChange = (event) => {
     const novoTipo = event.target.value;
     setTipoConta(novoTipo);
-    console.log(novoTipo);
   };
 
   const handleBuscaChange = (event) => setBusca(event.target.value);
-  const handleDataContaChange = (event) => setDataConta(event.target.value);
+  const handleDataContaChange = (event) => {
+    setDataConta(event.target.value);
+    setErroData('');
+  };
+
+  useEffect(() => {
+    handleBuscarConta();
+  }, []);
+
+  useEffect(() => {
+    const handleTouchMove = (e) => {
+      if ((mostrarPainel || showSuccessPanel) && !e.target.closest('.painel') && !e.target.closest('.success-panel')) {
+        e.preventDefault();
+      }
+    };
+
+    if (mostrarPainel || showSuccessPanel) {
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    }
+
+    return () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [mostrarPainel, showSuccessPanel]);
 
   const formatarData = (data, formato) => {
     if (!data) return "";
@@ -44,41 +81,167 @@ const Contas = () => {
 
     return data;
   };
+  
+  const validarCampos = () => {
+    let valido = true;
+    
+    setErroNome('');
+    setErroValor('');
+    setErroData('');
+    
+    if (!nomeConta.trim()) {
+      setErroNome('Por favor, preencha o nome da conta.');
+      valido = false;
+    }
+    
+    if (!valorConta.trim()) {
+      setErroValor('Por favor, informe o valor da conta.');
+      valido = false;
+    }
+    
+    if (!dataConta.trim()) {
+      setErroData('Por favor, selecione uma data.');
+      valido = false;
+    }
+    
+    return valido;
+  };
 
-  const handleAdicionarConta = () => {
+  const showSuccess = (message) => {
+    setSuccessMessage(message);
+    setShowSuccessPanel(true);
+    setTimeout(() => {
+      setShowSuccessPanel(false);
+    }, 3000);
+  };
+
+  const adicionarConta = () => {
+    // Removemos a chamada para validarCampos() aqui, pois já foi feita em handleAdicionarConta
+    setCarregando(true);
     const dataFormatada = formatarData(dataConta, "yyyy-MM-dd");
-
+    const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
+    
     fetch("http://192.168.18.22:8080/contas/cadastrar", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        usuarioID: 1,
-        nome: nomeConta,
+        usuarioID: idUsuario,
+        nomeConta: nomeConta,
         valor: parseFloat(valorConta),
         tipo: tipoConta,
         data: dataFormatada,
       }),
     })
       .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`Erro HTTP: ${response.status}`);
+        }
         const text = await response.text();
-
-        const data = JSON.parse(text);
-        console.log("Sucesso:", data);
-        setContas([...contas, {
-          nome: nomeConta,
-          valor: parseFloat(valorConta),
-          tipo: tipoConta,
-          dataConta: dataFormatada          
-        }]);
+        console.log("Sucesso:", text);
+        
+        handleBuscarConta();
+        showSuccess("Conta inserida com sucesso!");
       })
       .catch((error) => {
         console.error("Erro ao cadastrar conta:", error);
+        alert("Erro ao cadastrar conta. Por favor, tente novamente.");
+      })
+      .finally(() => {
+        setCarregando(false);
       });
+  };
 
-      window.location.reload();      
+  const excluirConta = (con_id) => {
+    if (!con_id) {
+      console.error("ID da conta não fornecido para exclusão");
+      return;
+    }
+    
+    setCarregando(true);
+    fetch(`http://192.168.18.22:8080/contas/deletar?id=${encodeURIComponent(con_id)}`, {
+      method: "DELETE",
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        const text = await response.text();
+        console.log("Sucesso:", text);
+        
+        handleBuscarConta();
+        showSuccess("Conta excluída com sucesso!");
+      })
+      .catch((error) => {
+        console.error("Erro ao excluir conta:", error);
+        alert("Erro ao excluir conta. Por favor, tente novamente.");
+      })
+      .finally(() => {
+        setCarregando(false);
+      });
+  };
 
+  const alterarConta = () => {
+    // Removemos a chamada para validarCampos() aqui, pois já foi feita em handleAdicionarConta
+    if (!con_id) {
+      console.error("ID da conta não fornecido para alteração");
+      return;
+    }
+    
+    setCarregando(true);
+    const dataFormatada = formatarData(dataConta, "yyyy-MM-dd");
+    const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
+    
+    fetch("http://192.168.18.22:8080/contas/alterar", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        con_id: con_id,
+        usuarioID: idUsuario,
+        nomeConta: nomeConta,
+        valor: parseFloat(valorConta),
+        tipo: tipoConta,
+        data: dataFormatada,
+      }),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        const text = await response.text();
+        console.log("Sucesso:", text);
+        
+        handleBuscarConta();
+        showSuccess("Conta alterada com sucesso!");
+      })
+      .catch((error) => {
+        console.error("Erro ao alterar conta:", error);
+        alert("Erro ao alterar conta. Por favor, tente novamente.");
+      })
+      .finally(() => {
+        setCarregando(false);
+      });
+  };
+  
+  const handleAdicionarConta = () => {
+    // Verifica se os campos são válidos
+    if (!validarCampos()) {
+      // Se não forem válidos, apenas retorna sem fechar o painel
+      return;
+    }
+    
+    // Se os campos forem válidos, prossegue com a adição/alteração
+    if (alterando) {
+      alterarConta();
+      setAlterando(false);
+    } else {
+      adicionarConta();
+    }
+
+    // Limpa os campos e fecha o painel apenas se a validação for bem-sucedida
     setNomeConta("");
     setValorConta("");
     setTipoConta("Mensal");
@@ -87,8 +250,10 @@ const Contas = () => {
   };
 
   const handleBuscarConta = () => {
-    const idUsuario = JSON.parse(localStorage.getItem('idUsuario'));
+    setCarregando(true);
+    const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
     console.log("ID do usuário:", idUsuario);
+    
     fetch(`http://192.168.18.22:8080/contas/listarContas?idUsuario=${encodeURIComponent(idUsuario)}`, {
       method: 'GET',
       headers: {
@@ -96,19 +261,30 @@ const Contas = () => {
         'Accept': 'application/json'
       }
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
         console.log("Resposta da API:", data);
-        setContas(data);
+        if (Array.isArray(data)) {
+          setContas(data);
+        } else {
+          console.error("Dados recebidos não são um array:", data);
+          setContas([]);
+        }
       })
       .catch((error) => {
         console.error("Erro ao buscar contas:", error);
+        alert("Erro ao buscar contas. Por favor, recarregue a página.");
+        setContas([]);
+      })
+      .finally(() => {
+        setCarregando(false);
       });
   };
-
-  window.addEventListener("load", function () {
-    handleBuscarConta();
-  });
 
   const handleLimparCampo = () => {
     setNomeConta('');
@@ -118,29 +294,52 @@ const Contas = () => {
   };
 
   const handleExcluirConta = (index) => {
-    const novasContas = contas.filter((_, i) => i !== index);
-    setContas(novasContas);
+    if (index >= 0 && index < contas.length) {
+      const conta = contas[index];
+      if (conta && conta.con_id) {
+        excluirConta(conta.con_id);
+      } else {
+        console.error("Conta não possui ID válido:", conta);
+      }
+    }
   };
 
   const handleAlterarConta = (index) => {
-    const contaSelecionada = contas[index];
-    setNomeConta(contaSelecionada.nome);
-    setValorConta(contaSelecionada.valor);
-    setTipoConta(contaSelecionada.tipo);
-    setDataConta(contaSelecionada.dataConta);
-    setMostrarPainel(true);
-    setAlterouConta(index);
+    if (index >= 0 && index < contas.length) {
+      const contaSelecionada = contas[index];
+      if (!contaSelecionada) {
+        console.error("Conta selecionada é undefined");
+        return;
+      }
+      
+      setConId(contaSelecionada.con_id);
+      setNomeConta(contaSelecionada.nomeConta || '');
+      setValorConta(contaSelecionada.valor ? contaSelecionada.valor.toString() : '');
+      setTipoConta(contaSelecionada.tipo || 'Mensal');
+      
+      if (contaSelecionada.data) {
+        const dataFormatada = formatarData(contaSelecionada.data, "yyyy-MM-dd");
+        setDataConta(dataFormatada);
+      } else {
+        setDataConta('');
+      }
+      
+      setMostrarPainel(true);
+      setAlterouConta(index);
+      setAlterando(true);
+    }
   };
 
   const contasFiltradas = contas.filter((conta) =>
-    conta.nomeConta.toLowerCase().includes(busca.toLowerCase())
+    conta && conta.nomeConta 
+      ? conta.nomeConta.toLowerCase().includes(busca.toLowerCase()) 
+      : false
   );
 
   return (
     <div className="contas-container">
       <h2>Gerenciar Contas</h2>
 
-      {/* Campo de Busca */}
       <div className="input-container">
         <input
           type="text"
@@ -151,18 +350,19 @@ const Contas = () => {
         />
       </div>
 
-      {/* Lista de Contas Filtradas */}
       <div className="contas-list">
-        {contasFiltradas.length === 0 ? (
+        {carregando ? (
+          <p className="loading">Carregando...</p>
+        ) : contasFiltradas.length === 0 ? (
           <p className="no-results">Nenhuma conta encontrada.</p>
         ) : (
           contasFiltradas.map((conta, index) => (
-            <div className="conta-item" key={index}>
+            <div className="conta-item" key={conta.con_id || index}>
               <div className="conta-info">
-                <strong>{conta.nomeConta}</strong> - R$ {conta.valor.toFixed(2)}{' '}
-                <em>({conta.tipo})</em>
+                <strong>{conta.nomeConta}</strong> - R$ {conta.valor ? conta.valor.toFixed(2) : '0.00'}{' '}
+                <em>({conta.tipo || 'N/A'})</em>
                 <br />
-                <em>Data: {formatarData(conta.data, "dd/MM/yyyy")}</em>
+                <em>Data: {conta.data ? formatarData(conta.data, "dd/MM/yyyy") : 'N/A'}</em>
                 <br />
               </div>
               <div className="conta-buttons">
@@ -184,38 +384,41 @@ const Contas = () => {
         )}
       </div>
 
-      {/* Botão para Adicionar Conta */}
       <div className="button-container">
         <button
           onClick={() => {
             setAlterouConta(false);
+            setAlterando(false);
+            handleLimparCampo();
             setMostrarPainel(true);
           }}
           className="button"
+          disabled={carregando}
         >
           Adicionar Conta
         </button>
       </div>
 
-      {/* Painel de Adição de Conta */}
       {mostrarPainel && (
         <div className="painel-container">
           <div className="painel">
-            <h3>Adicionar Nova Conta</h3>
+            <h3>{alterando ? "Alterar Conta" : "Adicionar Nova Conta"}</h3>
             <input
               type="text"
               placeholder="Nome da Conta"
               value={nomeConta}
               onChange={handleNomeContaChange}
-              className="input"
+              className={`input ${erroNome ? 'input-error' : ''}`}
             />
+            {erroNome && <div className="error-message">{erroNome}</div>}
             <input
               type="number"
               placeholder="Valor da Conta"
               value={valorConta}
               onChange={handleValorContaChange}
-              className="input"
+              className={`input ${erroValor ? 'input-error' : ''}`}
             />
+            {erroValor && <div className="error-message">{erroValor}</div>}
             <select
               value={tipoConta}
               onChange={handleTipoContaChange}
@@ -225,27 +428,48 @@ const Contas = () => {
               <option value="Extra">Extra</option>
             </select>
             <label>{tipoConta === "Mensal" ? "Data vencimento" : "Data pagamento"}</label>
-            <input
+            <input              
               type="date"
               placeholder="Data de Vencimento"
-              className="input"
+              className={`input ${erroData ? 'input-error' : ''}`}
               value={dataConta}
               onChange={handleDataContaChange}
+              id='data'
             />
+            {erroData && <div className="error-message">{erroData}</div>}
             <div className="painel-buttons">
-              <button onClick={handleAdicionarConta} className="button">
-                Salvar
+              <button 
+                onClick={handleAdicionarConta} 
+                className="button"
+                disabled={carregando}
+              >
+                {carregando ? "Salvando..." : "Salvar"}
               </button>
               <button
                 onClick={() => {
                   handleLimparCampo();
                   setMostrarPainel(false);
+                  setAlterando(false);
+                  setErroNome('');
+                  setErroValor('');
+                  setErroData('');
                 }}
                 className="button"
+                disabled={carregando}
               >
                 Cancelar
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showSuccessPanel && (
+        <div className="success-panel-overlay">
+          <div className="success-panel">
+            <div className="success-icon">✓</div>
+            <h3>{successMessage}</h3>
+            <div className="success-animation"></div>
           </div>
         </div>
       )}

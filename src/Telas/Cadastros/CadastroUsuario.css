@@ -82,20 +82,20 @@ html, body {
 
 @media screen and (min-width: 10px) and (max-width: 768px) {
     .cadastro-usuario {
-        width: 100%;
+        width: 80vw;
         padding: 1vh;
         height: 50vh;
     }
 
     .campo-cadastro{
         width: 80%;
-        height: 5vh;
+        height: 8vh;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
         gap: 2vh;
-        font-size: 1.3vh;
+        font-size: 3vh;
     }
 
     #btnCadastrar{
@@ -204,4 +204,102 @@ html, body {
         margin-top: 10px;
         cursor: pointer;
     }
+}
+
+/* Estilos para o painel de sucesso */
+.success-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.success-panel {
+  background-color: white;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.success-icon {
+  background-color: #4CAF50;
+  color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  margin: 0 auto 20px;
+}
+
+.success-panel h3 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.success-panel p {
+  color: #666;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.success-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.success-button:hover {
+  background-color: #45a049;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  .success-panel {
+    padding: 20px;
+  }
+  
+  .success-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    margin-bottom: 15px;
+  }
+  
+  .success-panel h3 {
+    font-size: 18px;
+  }
+  
+  .success-panel p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .success-button {
+    padding: 10px 25px;
+    font-size: 15px;
+  }
 }

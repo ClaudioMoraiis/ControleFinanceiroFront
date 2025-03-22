@@ -39,7 +39,7 @@ export default function EsqueceuSenha() {
                         Enviar
                     </button>
                     
-                    <Link to="/" className="back-link">
+                    <Link to="/Login" className="back-link">
                         Voltar para Login
                     </Link>
                 </form>

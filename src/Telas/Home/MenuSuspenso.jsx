@@ -16,7 +16,7 @@ export default function MenuSuspenso() {
                 <li>
                     <a
                     onClick={handleLogout}
-                    href="/">Sair</a>
+                    href="/Login">Sair</a>
                 </li>
             </ul>
         </div>

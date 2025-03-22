@@ -1,0 +1,93 @@
+/* Reset de margens e padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+/* Estilização da div de login e cadastro */
+.login, .cadastro-usuario {
+    width: 50vw; /* 50% da largura da tela */
+    height: 50vh; /* 50% da altura da tela */
+    min-width: 350px; /* Garante que não fique muito pequeno */
+    min-height: 400px; /* Mantém um tamanho aceitável */
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* Título */
+.login-topo, .cadastro-topo {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#h1Login, #h1Cadastro {
+    font-size: 2rem;
+    color: #000;
+}
+
+/* Campos de entrada */
+.campo-login, .campo-cadastro {
+    width: 80%;
+    height: 45px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+/* Botões */
+#btnEntrar, #btnCadastrar {
+    width: 80%;
+    height: 50px;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#btnEntrar:hover, #btnCadastrar:hover {
+    background-color: #333;
+}
+
+/* Links */
+a {
+    display: block;
+    margin-top: 10px;
+    color: blue;
+    text-decoration: none;
+}
+
+/* Responsividade */
+@media screen and (max-width: 768px) {
+    .login, .cadastro-usuario {
+        width: 90%;
+        height: auto; /* Para mobile, fica um pouco mais flexível */
+        min-height: 400px;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .login, .cadastro-usuario {
+        width: 40vw; /* Em telas muito grandes, reduz um pouco */
+        height: 45vh; /* Mantém um formato quadrado proporcional */
+    }
+}

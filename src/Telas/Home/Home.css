@@ -30,8 +30,35 @@ body {
     border-radius: 5px;
     width: 5vw;
     height: 6vh;
+    position: relative;
 }
 
 .menu-button:hover {
     background: rgb(29, 28, 28);
+}
+
+@media (max-width: 768px) {
+    .menu-button {
+        width: 12vw;
+        height: auto;
+        font-size: 4vw;
+    }
+}
+
+/* Telas médias (tablets) */
+@media (max-width: 1024px) {
+    .menu-button {
+        width: 8vw;
+        height: auto;
+        font-size: 3vw;
+    }
+}
+
+/* Telas grandes (desktops) */
+@media (min-width: 1440px) {
+    .menu-button {
+        width: 3vw;
+        height: auto;
+        font-size: 1.2vw;
+    }
 }

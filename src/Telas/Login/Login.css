@@ -9,15 +9,14 @@ body {
 }
 
 html, body {
-    min-height: 600px;
-    height: 100vh;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
-
-
 
 .login {
     width: 80vh;
-    height: 40vh;
+    height: 100vh;
     border: 1px solid black;
     border-radius: 10px;
     background-color: #ffffff;
@@ -60,63 +59,72 @@ html, body {
     padding: 0 1vh;
 }
 
-  #btnEntrar {
-      width: 100%;
-      max-width: 300px;
-      height: 40px;
-      border-radius: 5px;
-      border: 1px solid black;
-      font-size: 16px;
-      background-color: #000000;
-      color: #ffffff;
-      font-family: Verdana, Geneva, Tahoma, sans-serif;
-      margin-top: 10px;
-      cursor: pointer;
-  }
-  
+#btnEntrar {
+    width: 100%;
+    max-width: 300px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid black;
+    font-size: 16px;
+    background-color: #000000;
+    color: #ffffff;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-top: 10px;
+    cursor: pointer;
+}
 
-
+/* Mobile */
 @media screen and (min-width: 10px) and (max-width: 768px) {
     .login {
         width: 100%;
         padding: 1vh;
-        height: 50vh;
+        height: auto;
     }
 
-    .campo-login{
+    .campo-login {
         width: 80%;
-        height: 5vh;
+        height: 8vh;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
         gap: 2vh;
-        font-size: 1.3vh;
+        font-size: 3vh;
     }
 
-    #btnEntrar{
+    #btnEntrar {
         width: 100%;
         max-width: 300px;
-        height: 40px;
+        height: 5vh;
         border-radius: 5px;
         border: 1px solid black;
-        font-size: 16px;
+        font-size: 18px;
         color: #ffffff;
         font-family: Verdana, Geneva, Tahoma, sans-serif;
         margin-top: 10px;
         cursor: pointer;
     }
-    
+
+    .login-corpo {
+        width: 80vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 2vh;
+        height: 50vh;
+    }
 }
 
+/* Tablet */
 @media screen and (min-width: 768px) and (max-width: 1024px) {
     .login {
         width: 50vw;
         padding: 1vh;
         height: 50vh;
-    } 
+    }
     
-    .campo-login{
+    .campo-login {
         width: 70%;
         height: 5vh;
         display: flex;
@@ -126,9 +134,9 @@ html, body {
         gap: 2vh;
     }
 
-    #btnEntrar{
+    #btnEntrar {
         width: 100%;
-        width: 100vw;
+        /* Obs: remova a duplicidade do width abaixo */
         height: 40px;
         border-radius: 5px;
         border: 1px solid black;
@@ -140,14 +148,15 @@ html, body {
     }
 }
 
+/* Telas médias */
 @media screen and (min-width: 1025px) and (max-width: 1440px) {
     .login {
         width: 50vw;
         padding: 1vh;
         height: 50vh;
-    }   
-
-    .campo-login{
+    }
+    
+    .campo-login {
         width: 50%;
         height: 5vh;
         display: flex;
@@ -157,9 +166,8 @@ html, body {
         gap: 2vh;
     }
 
-    #btnEntrar{
+    #btnEntrar {
         width: 100%;
-        width: 100vw;
         height: 40px;
         border-radius: 5px;
         border: 1px solid black;
@@ -171,14 +179,15 @@ html, body {
     }
 }
 
-@media screen and (min-width: 1441px) and (max-width: 76008px) {
+/* Telas grandes */
+@media screen and (min-width: 1441px) {
     .login {
-        width: 30w;
+        width: 30vw; /* Certifique-se de usar "vw" corretamente */
         padding: 1vh;
         height: 50vh;
-    }   
-
-    .campo-login{
+    }
+    
+    .campo-login {
         width: 50%;
         height: 5vh;
         display: flex;
@@ -188,9 +197,8 @@ html, body {
         gap: 2vh;
     }
 
-        #btnEntrar{
+    #btnEntrar {
         width: 100%;
-        width: 100vw;
         height: 40px;
         border-radius: 5px;
         border: 1px solid black;

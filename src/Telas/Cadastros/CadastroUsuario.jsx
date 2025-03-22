@@ -10,6 +10,7 @@ export default function CadastroUsuario() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [showSuccessPanel, setShowSuccessPanel] = useState(false);
 
     const navigate = useNavigate();
 
@@ -51,21 +52,20 @@ export default function CadastroUsuario() {
                         throw new Error(errorMessage);
                     });
                 }
-                // First check if there's actually JSON content
                 const contentType = response.headers.get("content-type");
                 if (contentType && contentType.includes("application/json")) {
                     return response.json();
                 }
-                // If not JSON, just return the text
                 return response.text();
             })
             .then((data) => {
                 console.log(data);
-                setSuccess(true);
                 setLoading(false);
                 setUsuario('');
                 setEmail('');
                 setSenha('');
+                setSuccess(true);
+                setShowSuccessPanel(true);
                 return true;
             })
             .catch((error) => {
@@ -77,10 +77,15 @@ export default function CadastroUsuario() {
             });
         console.log(senha, usuario, Email);
     };
+    
+    const handleSuccessPanelClose = () => {
+        setShowSuccessPanel(false);
+        navigate("/Login");
+    };
 
     useEffect(() => {
         const handleBackButton = () => {
-            navigate("/");
+            navigate("/Login");
         };
 
         window.onpopstate = handleBackButton;
@@ -90,43 +95,59 @@ export default function CadastroUsuario() {
         };
     }, [navigate]);
 
-        return (
-            <div className="cadastro-usuario">
-                <div className="cadastro-topo">
-                    <h1 id="h1Cadastro">Cadastro</h1>
-                </div>
-
-                <div className="cadastro-corpo">
-                    {error && <div className="error-message">{error}</div>}
-                    <input
-                        className="campo-cadastro"
-                        type="text"
-                        placeholder="Usuário"
-                        value={usuario}
-                        onChange={(e) => setUsuario(e.target.value)}
-                    />
-                    <input
-                        className="campo-cadastro"
-                        type="text"
-                        placeholder="Email"
-                        value={Email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <input
-                        className="campo-cadastro"
-                        type="password"
-                        placeholder="Senha"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
-                    />
-                    <button
-                        className="campo-cadastro"
-                        id="btnCadastrar"
-                        onClick={handleSubmit}
-                    >
-                        Cadastrar
-                    </button>
-                </div>
+    return (
+        <div className="cadastro-usuario">
+          <div className="cadastro-topo">
+            <h1 id="h1Cadastro">Cadastro</h1>
+          </div>
+    
+          <div className="cadastro-corpo">
+            {error && <div className="error-message">{error}</div>}
+            <input
+              className="campo-cadastro"
+              type="text"
+              placeholder="Usuário"
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
+            />
+            <input
+              className="campo-cadastro"
+              type="email"
+              placeholder="Email"
+              value={Email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              className="campo-cadastro"
+              type="password"
+              placeholder="Senha"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+            />
+            <button
+              id="btnCadastrar"
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? "Cadastrando..." : "Cadastrar"}
+            </button>
+          </div>
+          
+          {showSuccessPanel && (
+            <div className="success-panel-overlay">
+              <div className="success-panel">
+                <div className="success-icon">✓</div>
+                <h3>Cadastro realizado com sucesso!</h3>
+                <p>Seu usuário foi cadastrado. Agora você pode fazer login.</p>
+                <button 
+                  className="success-button"
+                  onClick={handleSuccessPanelClose}
+                >
+                  OK
+                </button>
+              </div>
             </div>
-        )
-    }
+          )}
+        </div>
+      );
+}
