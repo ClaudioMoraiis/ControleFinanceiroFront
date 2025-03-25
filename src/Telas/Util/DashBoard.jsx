@@ -50,6 +50,7 @@ const Dashboard = () => {
                 </ul>
                 <h1></h1>
             </div>
+            <div style={{ height: "100px" }}></div>
         </div>
     );
 };

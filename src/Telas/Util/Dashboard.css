@@ -4,6 +4,7 @@
     box-sizing: border-box;
     height: auto;
     min-height: 100%;
+    padding-bottom: 80px;
 }
 
 .dashboard-title {
@@ -20,16 +21,20 @@
 
 .additional-content {
     padding: 10px;
-    margin-bottom: 30px; 
+    margin-bottom: 60px; 
 }
 
 .additional-content ul {
     padding-left: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .additional-content li {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.additional-content ul li:last-child {
+    margin-bottom: 30px;
 }
 
 @media (max-width: 768px) {
@@ -46,6 +51,10 @@
     .chart-container {
         height: 400px;
     }
+    
+    .additional-content {
+        margin-bottom: 80px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -53,7 +62,12 @@
         height: 300px;
     }
     
+    .dashboard {
+        padding-bottom: 120px;
+    }
+    
     .additional-content {
         padding: 5px;
+        margin-bottom: 100px;
     }
 }
