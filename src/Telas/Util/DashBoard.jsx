@@ -31,13 +31,16 @@ const Dashboard = () => {
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                         </Pie>
-                        <Tooltip />
+                        <Tooltip formatter={(value) => `R$ ${value}`} />
                         <Legend />
                     </PieChart>
                 </ResponsiveContainer>
             </div>
             
-            <div className="additional-content">                
+            <div className="additional-content">
+                <h3>Resumo Financeiro</h3>
+                <p>Este gráfico mostra a distribuição dos seus gastos por categoria.</p>
+                
                 <h3>Detalhamento</h3>
                 <ul>
                     <li><strong>Vendas:</strong> R$ 400,00</li>
@@ -45,6 +48,7 @@ const Dashboard = () => {
                     <li><strong>TI:</strong> R$ 200,00</li>
                     <li><strong>RH:</strong> R$ 100,00</li>
                 </ul>
+                <h1></h1>
             </div>
         </div>
     );

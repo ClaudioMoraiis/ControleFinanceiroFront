@@ -119,12 +119,13 @@
       top: 240px; 
       left: 0;
       right: 0;
-      bottom: 0; 
+      bottom: 0;
       padding: 0;
+    
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      height: calc(100vh - 240px);
-      display: flex; 
+    
+      display: block; 
   }
 
   .dashboard-header {
