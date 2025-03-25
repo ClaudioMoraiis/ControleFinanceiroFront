@@ -1,52 +1,59 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
-import MenuSuspenso from './MenuSuspenso';
+import DashBoard from '../Util/DashBoard';
 
 export default function Home() {
     const [userName, setUserName] = useState('');
-    const [isActive, setIsActive] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const emailStorage = JSON.parse(localStorage.getItem('email'));
         if (!emailStorage) return;
 
-        fetch(`http://192.168.18.22:8080/usuario/nome-por-email?email=${encodeURIComponent(emailStorage)}`, {
-            method: 'GET',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-                return response.text();    
-        })
-        .then(data => {
-            if (data) {
-                setUserName(data);
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao carregar nome do usuário:', error);
-            setUserName('Usuário');
-        });
+        fetch(`http://192.168.18.22:8080/usuario/nome-por-email?email=${encodeURIComponent(emailStorage)}`)
+            .then(response => response.ok ? response.text() : 'Usuário')
+            .then(data => setUserName(data))
+            .catch(() => setUserName('Usuário'));
     }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('email');
+        localStorage.removeItem('senha');
+        localStorage.removeItem('idUsuario');
+        navigate('/');
+    };
 
     return (
         <div className="home-container">
-            <div className='header'>
+            <div className="header">
                 <div className="menu-container">
-                    <button onClick={() => setIsActive(!isActive)} className="menu-button">
+                    <button onClick={() => setMenuOpen(!menuOpen)} className="menu-button">
                         ☰
                     </button>
-                    {isActive && <MenuSuspenso />}
+                    
+                    {menuOpen && (
+                        <div className="menu-dropdown">
+                            <ul className="menu-list">
+                                <li onClick={() => navigate('/Home')}>Início</li>
+                                <li onClick={() => navigate('/Perfil')}>Perfil</li>
+                                <li onClick={() => navigate('/Contas')}>Contas</li>
+                                <li onClick={() => navigate('/Configuracoes')}>Configurações</li>
+                                <li onClick={handleLogout}>Sair</li>
+                            </ul>
+                        </div>
+                    )}
                 </div>
-
-                <h1>Que bom te ver de volta, {userName || 'Usuário'}</h1>
-                <p>Gerencie suas finanças com facilidade.</p>
+                
+                <div className="welcome-text">
+                    <h1>Que bom te ver de volta, {userName || 'Usuário'}</h1>
+                    <p>Gerencie suas finanças com facilidade.</p>
+                </div>
+            </div>
+            
+            <div className="dashboard-container">
+                <DashBoard />
             </div>
         </div>
     );

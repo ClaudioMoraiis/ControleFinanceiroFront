@@ -9,6 +9,7 @@ export default function Login() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const [showSuccessPanel, setShowSuccessPanel] = useState(false);
+    const [logou, setLogou] = useState(false);
     const [idUsuario, setIdUsuario] = useState('');
 
     const navigate = useNavigate();
@@ -26,6 +27,10 @@ export default function Login() {
             return false;
         }
         return true;
+    };
+
+    const closePanel = () => {
+        setShowSuccessPanel(false);
     };
 
     const handleLogin = (event) => {
@@ -73,10 +78,10 @@ export default function Login() {
                 if (data === true || data === "true") {
                     setSuccess(true);
                     setError('');
+                    setLogou(true);
                     localStorage.setItem("email", JSON.stringify(email));
                     localStorage.setItem("senha", JSON.stringify(senha));
  
-                    // Buscar ID do usuário
                     fetch(`http://192.168.18.22:8080/usuario/idPorEmail?email=${encodeURIComponent(email)}`, {
                         method: 'GET',
                         headers: {
@@ -98,12 +103,13 @@ export default function Login() {
                         })
                         .catch(error => {
                             console.error("Erro ao buscar ID:", error);
-                            // Mesmo com erro, redirecionar
                             navigate("/Home");
                         });
                 } else {
                     setSuccess(false);
-                    setError(data); 
+                    setError(data);
+                    setLogou(false);
+                    setShowSuccessPanel(true);
                 }
             })            
             .catch((error) => {
@@ -111,6 +117,8 @@ export default function Login() {
                 setError(`${error.message}`);
                 setLoading(false);
                 setSuccess(false);
+                setLogou(false);
+                setShowSuccessPanel(true);
             });
     }
 
@@ -121,7 +129,6 @@ export default function Login() {
           </div>
     
           <div className="login-corpo">
-            {error && <div className="error-message">{error}</div>}
             <input
               className="campo-login"
               type="email"
@@ -149,18 +156,19 @@ export default function Login() {
             <a href="#" onClick={esqueceuSenha}>
               Esqueceu sua senha?
             </a>
-          </div>
-          
-          {/* Painel de sucesso */}
+          </div>          
           {showSuccessPanel && (
-            <div className="success-panel-overlay">
+            <div className="success-panel-overlay" onClick={closePanel}>
               <div className="success-panel">
-                <div className="success-icon">✓</div>
-                <h3>Login realizado com sucesso!</h3>
-                <p>Redirecionando para a página inicial...</p>
+                <div className="success-icon">
+                  {logou ? "✓" : "✕"}
+                </div>
+                <h3>{logou ? "Login realizado com sucesso!" : "E-mail ou senha inválido"}</h3>
+                <p>{logou ? "Redirecionando para a página inicial..." : "Clique em qualquer lugar para fechar"}</p>
+                <button className="close-button" onClick={closePanel}>Fechar</button>
               </div>
             </div>
-          )}
+          )}         
         </div>
       );   
 }
