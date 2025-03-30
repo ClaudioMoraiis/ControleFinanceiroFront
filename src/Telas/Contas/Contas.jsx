@@ -8,6 +8,8 @@ const Contas = () => {
   const [valorConta, setValorConta] = useState('');
   const [tipoConta, setTipoConta] = useState('Mensal');
   const [busca, setBusca] = useState('');
+  const [dataInicial, setDataInicial] = useState('');
+  const [dataFinal, setDataFinal] = useState('');
   const [mostrarPainel, setMostrarPainel] = useState(false);
   const [alterouConta, setAlterouConta] = useState(false);
   const [dataConta, setDataConta] = useState('');
@@ -39,6 +41,9 @@ const Contas = () => {
     setDataConta(event.target.value);
     setErroData('');
   };
+
+  const handleDataInicialChange = (event) => setDataInicial(event.target.value);
+  const handleDataFinalChange = (event) => setDataFinal(event.target.value);
 
   useEffect(() => {
     handleBuscarConta();
@@ -81,29 +86,29 @@ const Contas = () => {
 
     return data;
   };
-  
+
   const validarCampos = () => {
     let valido = true;
-    
+
     setErroNome('');
     setErroValor('');
     setErroData('');
-    
+
     if (!nomeConta.trim()) {
       setErroNome('Por favor, preencha o nome da conta.');
       valido = false;
     }
-    
+
     if (!valorConta.trim()) {
       setErroValor('Por favor, informe o valor da conta.');
       valido = false;
     }
-    
+
     if (!dataConta.trim()) {
       setErroData('Por favor, selecione uma data.');
       valido = false;
     }
-    
+
     return valido;
   };
 
@@ -116,11 +121,10 @@ const Contas = () => {
   };
 
   const adicionarConta = () => {
-    // Removemos a chamada para validarCampos() aqui, pois já foi feita em handleAdicionarConta
     setCarregando(true);
     const dataFormatada = formatarData(dataConta, "yyyy-MM-dd");
     const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
-    
+
     fetch("http://192.168.18.22:8080/contas/cadastrar", {
       method: "POST",
       headers: {
@@ -140,7 +144,7 @@ const Contas = () => {
         }
         const text = await response.text();
         console.log("Sucesso:", text);
-        
+
         handleBuscarConta();
         showSuccess("Conta inserida com sucesso!");
       })
@@ -158,7 +162,7 @@ const Contas = () => {
       console.error("ID da conta não fornecido para exclusão");
       return;
     }
-    
+
     setCarregando(true);
     fetch(`http://192.168.18.22:8080/contas/deletar?id=${encodeURIComponent(con_id)}`, {
       method: "DELETE",
@@ -169,7 +173,7 @@ const Contas = () => {
         }
         const text = await response.text();
         console.log("Sucesso:", text);
-        
+
         handleBuscarConta();
         showSuccess("Conta excluída com sucesso!");
       })
@@ -183,16 +187,15 @@ const Contas = () => {
   };
 
   const alterarConta = () => {
-    // Removemos a chamada para validarCampos() aqui, pois já foi feita em handleAdicionarConta
     if (!con_id) {
       console.error("ID da conta não fornecido para alteração");
       return;
     }
-    
+
     setCarregando(true);
     const dataFormatada = formatarData(dataConta, "yyyy-MM-dd");
     const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
-    
+
     fetch("http://192.168.18.22:8080/contas/alterar", {
       method: "PUT",
       headers: {
@@ -213,7 +216,7 @@ const Contas = () => {
         }
         const text = await response.text();
         console.log("Sucesso:", text);
-        
+
         handleBuscarConta();
         showSuccess("Conta alterada com sucesso!");
       })
@@ -225,15 +228,12 @@ const Contas = () => {
         setCarregando(false);
       });
   };
-  
+
   const handleAdicionarConta = () => {
-    // Verifica se os campos são válidos
     if (!validarCampos()) {
-      // Se não forem válidos, apenas retorna sem fechar o painel
       return;
     }
-    
-    // Se os campos forem válidos, prossegue com a adição/alteração
+
     if (alterando) {
       alterarConta();
       setAlterando(false);
@@ -241,7 +241,6 @@ const Contas = () => {
       adicionarConta();
     }
 
-    // Limpa os campos e fecha o painel apenas se a validação for bem-sucedida
     setNomeConta("");
     setValorConta("");
     setTipoConta("Mensal");
@@ -253,8 +252,8 @@ const Contas = () => {
     setCarregando(true);
     const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
     console.log("ID do usuário:", idUsuario);
-    
-    fetch(`http://192.168.18.22:8080/contas/listarContas?idUsuario=${encodeURIComponent(idUsuario)}`, {
+
+    fetch(`http://192.168.18.22:8080/contas/listarContasPorUsuario?idUsuario=${encodeURIComponent(idUsuario)}&detalhado=true`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -311,34 +310,61 @@ const Contas = () => {
         console.error("Conta selecionada é undefined");
         return;
       }
-      
+
       setConId(contaSelecionada.con_id);
       setNomeConta(contaSelecionada.nomeConta || '');
       setValorConta(contaSelecionada.valor ? contaSelecionada.valor.toString() : '');
       setTipoConta(contaSelecionada.tipo || 'Mensal');
-      
+
       if (contaSelecionada.data) {
         const dataFormatada = formatarData(contaSelecionada.data, "yyyy-MM-dd");
         setDataConta(dataFormatada);
       } else {
         setDataConta('');
       }
-      
+
       setMostrarPainel(true);
       setAlterouConta(index);
       setAlterando(true);
     }
   };
 
-  const contasFiltradas = contas.filter((conta) =>
-    conta && conta.nomeConta 
-      ? conta.nomeConta.toLowerCase().includes(busca.toLowerCase()) 
-      : false
-  );
+  const contasFiltradas = contas.filter((conta) => {
+    const matchesBusca = conta && conta.nomeConta
+      ? conta.nomeConta.toLowerCase().includes(busca.toLowerCase())
+      : false;
+
+    let matchesData = true;
+    if (dataInicial) {
+      matchesData = matchesData && new Date(conta.data) >= new Date(dataInicial);
+    }
+    if (dataFinal) {
+      matchesData = matchesData && new Date(conta.data) <= new Date(dataFinal);
+    }
+    return matchesBusca && matchesData;
+  });
 
   return (
     <div className="contas-container">
       <h2>Gerenciar Contas</h2>
+      <div className='div-datas'>
+        <label>Data inicial</label>
+        <input
+          id='inptDataInicial'
+          type='date'
+          className='inptData'
+          value={dataInicial}
+          onChange={handleDataInicialChange}
+        />
+        <label>Data final</label>
+        <input
+          id='inptDataFinal'
+          type='date'
+          className='inptData'
+          value={dataFinal}
+          onChange={handleDataFinalChange}
+        />
+      </div>
 
       <div className="input-container">
         <input
@@ -428,7 +454,7 @@ const Contas = () => {
               <option value="Extra">Extra</option>
             </select>
             <label>{tipoConta === "Mensal" ? "Data vencimento" : "Data pagamento"}</label>
-            <input              
+            <input
               type="date"
               placeholder="Data de Vencimento"
               className={`input ${erroData ? 'input-error' : ''}`}
@@ -438,8 +464,8 @@ const Contas = () => {
             />
             {erroData && <div className="error-message">{erroData}</div>}
             <div className="painel-buttons">
-              <button 
-                onClick={handleAdicionarConta} 
+              <button
+                onClick={handleAdicionarConta}
                 className="button"
                 disabled={carregando}
               >

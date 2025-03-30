@@ -36,10 +36,7 @@ export default function Home() {
                     {menuOpen && (
                         <div className="menu-dropdown">
                             <ul className="menu-list">
-                                <li onClick={() => navigate('/Home')}>Início</li>
-                                <li onClick={() => navigate('/Perfil')}>Perfil</li>
                                 <li onClick={() => navigate('/Contas')}>Contas</li>
-                                <li onClick={() => navigate('/Configuracoes')}>Configurações</li>
                                 <li onClick={handleLogout}>Sair</li>
                             </ul>
                         </div>
