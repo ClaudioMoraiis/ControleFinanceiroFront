@@ -10,8 +10,7 @@ export default function EsqueceuSenha() {
         await fetch(`http://192.168.18.22:8080/usuario/recuperar-senha?email=${encodeURIComponent(email)}`, {
             method: "POST",
             headers: { 
-                "Content-Type": "application/json",                
-                "Authorization": `Bearer ${localStorage.getItem("token")}`
+                "Content-Type": "application/json"
             },
             body: new URLSearchParams({ email: email }),
         });

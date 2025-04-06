@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { useSearchParams } from 'react-router-dom';
 import './RedefinirSenha.css';
 
@@ -10,9 +11,9 @@ export default function RedefinirSenha() {
     const [success, setSuccess] = useState(false);
     const [searchParams] = useSearchParams();
     const [token, setToken] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
-        // Obtendo o token da URL
         const tokenFromUrl = searchParams.get('token');
         if (tokenFromUrl) {
             setToken(tokenFromUrl);
@@ -63,6 +64,7 @@ export default function RedefinirSenha() {
             setConfirmarSenha('');
             setSenha('');
             setToken('');
+            navigate('/login');
             
         } catch (error) {
             console.error('Erro na requisição:', error.message);
