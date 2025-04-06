@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './Login.css'
 
@@ -11,6 +11,7 @@ export default function Login() {
     const [showSuccessPanel, setShowSuccessPanel] = useState(false);
     const [logou, setLogou] = useState(false);
     const [idUsuario, setIdUsuario] = useState('');
+    const token = localStorage.getItem('token');
 
     const navigate = useNavigate();
     const cadUsuario = () => {
@@ -57,7 +58,6 @@ export default function Login() {
         })
             .then((response) => {
                 console.log("Status da resposta:", response.status);
-
                 if (!response.ok) {
                     return response.text().then(text => {
                         throw new Error(`${text}`);
@@ -75,18 +75,21 @@ export default function Login() {
                 console.log("Dados recebidos:", data);
                 setLoading(false);
             
-                if (data === true || data === "true") {
+                if (typeof data === 'string' && data.startsWith("Login realizado com sucesso")) {
                     setSuccess(true);
                     setError('');
                     setLogou(true);
+                    
+                    const token = data.replace("Login realizado com sucesso", "").trim();
+                    localStorage.setItem("token", token);
                     localStorage.setItem("email", JSON.stringify(email));
-                    localStorage.setItem("senha", JSON.stringify(senha));
  
                     fetch(`http://192.168.18.22:8080/usuario/idPorEmail?email=${encodeURIComponent(email)}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Accept': 'application/json'
+                            'Accept': 'application/json',
+                            "Authorization": `Bearer ${token}`
                         }
                     })
                         .then(response => response.text())
@@ -170,5 +173,5 @@ export default function Login() {
             </div>
           )}         
         </div>
-      );   
+    );   
 }

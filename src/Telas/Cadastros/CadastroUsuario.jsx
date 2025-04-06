@@ -35,10 +35,12 @@ export default function CadastroUsuario() {
 
         console.log("Clicou no botão");
 
+        const token = localStorage.getItem('token');
+
         fetch("http://192.168.18.22:8080/usuario/cadastrar", {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 nome: usuario,

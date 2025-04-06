@@ -19,7 +19,8 @@ const Contas = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [erroNome, setErroNome] = useState('');
   const [erroValor, setErroValor] = useState('');
-  const [erroData, setErroData] = useState('');
+  const [erroData, setErroData] = useState('');  
+  const token = localStorage.getItem('token');
 
   const handleNomeContaChange = (event) => {
     setNomeConta(event.target.value);
@@ -128,7 +129,8 @@ const Contas = () => {
     fetch("http://192.168.18.22:8080/contas/cadastrar", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json",        
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({
         usuarioID: idUsuario,
@@ -166,6 +168,10 @@ const Contas = () => {
     setCarregando(true);
     fetch(`http://192.168.18.22:8080/contas/deletar?id=${encodeURIComponent(con_id)}`, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
     })
       .then(async (response) => {
         if (!response.ok) {
@@ -200,6 +206,7 @@ const Contas = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({
         con_id: con_id,
@@ -247,25 +254,27 @@ const Contas = () => {
     setDataConta("");
     setMostrarPainel(false);
   };
+    const handleBuscarConta = () => {
+      setCarregando(true);
+      const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
+      console.log("ID do usuário:", idUsuario);
 
-  const handleBuscarConta = () => {
-    setCarregando(true);
-    const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
-    console.log("ID do usuário:", idUsuario);
-
-    fetch(`http://192.168.18.22:8080/contas/listarContasPorUsuario?idUsuario=${encodeURIComponent(idUsuario)}&detalhado=true`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Erro HTTP: ${response.status}`);
+      fetch(`http://192.168.18.22:8080/contas/listarContasPorUsuario?idUsuario=${encodeURIComponent(idUsuario)}&detalhado=true`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
         }
-        return response.json();
       })
+      .then(async (response) => {
+        if (!response.ok) {
+          const erroTexto = await response.text();
+          console.error("Erro na resposta da API:", erroTexto);
+          throw new Error("Erro ao buscar contas");
+        }
+        return response.json(); // Aqui você espera um JSON real
+      })      
       .then((data) => {
         console.log("Resposta da API:", data);
         if (Array.isArray(data)) {
@@ -274,17 +283,16 @@ const Contas = () => {
           console.error("Dados recebidos não são um array:", data);
           setContas([]);
         }
-      })
-      .catch((error) => {
-        console.error("Erro ao buscar contas:", error);
-        alert("Erro ao buscar contas. Por favor, recarregue a página.");
-        setContas([]);
-      })
-      .finally(() => {
-        setCarregando(false);
-      });
-  };
-
+      })      
+        .catch((error) => {
+          console.error("Erro ao buscar contas:", error);
+          alert("Erro ao buscar contas. Por favor, recarregue a página.");
+          setContas([]);
+        })
+        .finally(() => {
+          setCarregando(false);
+        });
+    };
   const handleLimparCampo = () => {
     setNomeConta('');
     setValorConta('');

@@ -12,7 +12,13 @@ export default function Home() {
         const emailStorage = JSON.parse(localStorage.getItem('email'));
         if (!emailStorage) return;
 
-        fetch(`http://192.168.18.22:8080/usuario/nome-por-email?email=${encodeURIComponent(emailStorage)}`)
+        fetch(`http://192.168.18.22:8080/usuario/nome-por-email?email=${encodeURIComponent(emailStorage)}`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            }
+        })
             .then(response => response.ok ? response.text() : 'Usuário')
             .then(data => setUserName(data))
             .catch(() => setUserName('Usuário'));
