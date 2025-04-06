@@ -84,7 +84,7 @@ export default function Login() {
                     localStorage.setItem("token", token);
                     localStorage.setItem("email", JSON.stringify(email));
  
-                    fetch(`http://192.168.18.22:8080/usuario/idPorEmail?email=${encodeURIComponent(email)}`, {
+                    fetch(`http://192.168.18.22:8080/usuario/id-por-email?email=${encodeURIComponent(email)}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',

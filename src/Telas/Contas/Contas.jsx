@@ -259,7 +259,7 @@ const Contas = () => {
       const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
       console.log("ID do usuário:", idUsuario);
 
-      fetch(`http://192.168.18.22:8080/contas/listarContasPorUsuario?idUsuario=${encodeURIComponent(idUsuario)}&detalhado=true`, {
+      fetch(`http://192.168.18.22:8080/contas/listar-contas-por-usuario?idUsuario=${encodeURIComponent(idUsuario)}&detalhado=true`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
