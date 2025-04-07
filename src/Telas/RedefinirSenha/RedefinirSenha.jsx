@@ -9,6 +9,7 @@ export default function RedefinirSenha() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [showPanel, setShowPanel] = useState(false);
     const [searchParams] = useSearchParams();
     const [token, setToken] = useState('');
     const navigate = useNavigate();
@@ -19,8 +20,13 @@ export default function RedefinirSenha() {
             setToken(tokenFromUrl);
         } else {
             setError('Token inválido ou ausente!');
+            setShowPanel(true);
         }
     }, [searchParams]);
+
+    const closePanel = () => {
+        setShowPanel(false);
+    };
 
     const handleRedefinirSenha = async (event) => {
         event.preventDefault();
@@ -31,12 +37,14 @@ export default function RedefinirSenha() {
         if (!token) {
             setError('Token inválido ou ausente!');
             setLoading(false);
+            setShowPanel(true);
             return;
         }
 
         if (senha !== confirmarSenha) {
             setError('As senhas não coincidem!');
             setLoading(false);
+            setShowPanel(true);
             return;
         }
 
@@ -58,17 +66,20 @@ export default function RedefinirSenha() {
                 throw new Error(errorMessage || 'Erro ao redefinir senha!');
             }
 
-            const data = await response.text();
             setSuccess(true);
-            setError(data);
+            setError('');
             setConfirmarSenha('');
             setSenha('');
             setToken('');
-            navigate('/login');
-            
-        } catch (error) {
-            console.error('Erro na requisição:', error.message);
-            setError(error.message);
+            setShowPanel(true);
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
+        } catch (err) {
+            console.error('Erro na requisição:', err.message);
+            setError(err.message);
+            setSuccess(false);
+            setShowPanel(true);
         } finally {
             setLoading(false);
         }
@@ -76,10 +87,26 @@ export default function RedefinirSenha() {
 
     return (
         <div className="container">
+            {showPanel && (
+                <div className="success-panel-overlay" onClick={closePanel}>
+                    <div className="success-panel">
+                        <div className="success-icon">
+                            {success ? "✓" : "✕"}
+                        </div>
+                        <h3>
+                            {success ? "Senha redefinida com sucesso!" : "Erro ao redefinir senha"}
+                        </h3>
+                        <p>
+                            {success ? "Você será redirecionado para o login em alguns segundos." : "Clique em qualquer lugar para fechar."}
+                        </p>
+                        <button className="close-button" onClick={closePanel}>Fechar</button>
+                    </div>
+                </div>
+            )}
+
             <div className="recovery-box">
                 <h1>Redefinição de Senha</h1>
-                {success && <p style={{ color: 'green' }}>Senha redefinida com sucesso!</p>}
-                <form className='recovery-form' onSubmit={handleRedefinirSenha}>
+                <form className="recovery-form" onSubmit={handleRedefinirSenha}>
                     <div className="input-group">
                         <input
                             className="recovery-input"
