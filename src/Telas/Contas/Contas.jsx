@@ -126,7 +126,7 @@ const Contas = () => {
     const dataFormatada = formatarData(dataConta, "yyyy-MM-dd");
     const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
 
-    fetch("http://192.168.18.22:8080/contas/cadastrar", {
+    fetch("https://controlefinanceiro-wandering-glitter-7368.fly.dev/contas/cadastrar", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",        
@@ -166,7 +166,7 @@ const Contas = () => {
     }
 
     setCarregando(true);
-    fetch(`http://192.168.18.22:8080/contas/deletar?id=${encodeURIComponent(con_id)}`, {
+    fetch(`https://controlefinanceiro-wandering-glitter-7368.fly.dev/contas/deletar?id=${encodeURIComponent(con_id)}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -202,7 +202,7 @@ const Contas = () => {
     const dataFormatada = formatarData(dataConta, "yyyy-MM-dd");
     const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
 
-    fetch("http://192.168.18.22:8080/contas/alterar", {
+    fetch("https://controlefinanceiro-wandering-glitter-7368.fly.dev/contas/alterar", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -259,7 +259,7 @@ const Contas = () => {
       const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
       console.log("ID do usuário:", idUsuario);
 
-      fetch(`http://192.168.18.22:8080/contas/listar-contas-por-usuario?idUsuario=${encodeURIComponent(idUsuario)}&detalhado=true`, {
+      fetch(`https://controlefinanceiro-wandering-glitter-7368.fly.dev/contas/listar-contas-por-usuario?idUsuario=${encodeURIComponent(idUsuario)}&detalhado=true`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

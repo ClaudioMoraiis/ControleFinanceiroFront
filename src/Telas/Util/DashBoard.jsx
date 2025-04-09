@@ -10,7 +10,7 @@ const Dashboard = () => {
 
     const fetchData = () => {
         const idUsuario = localStorage.getItem("idUsuario");
-        fetch(`http://192.168.18.22:8080/contas/listar-contas-por-usuario?idUsuario=${encodeURIComponent(idUsuario)}`, {
+        fetch(`https://controlefinanceiro-wandering-glitter-7368.fly.dev/contas/listar-contas-por-usuario?idUsuario=${encodeURIComponent(idUsuario)}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

@@ -49,7 +49,7 @@ export default function RedefinirSenha() {
         }
 
         try {
-            const response = await fetch(`http://192.168.18.22:8080/usuario/redefinir-senha?senha=${encodeURIComponent(senha)}&confirmarSenha=${encodeURIComponent(confirmarSenha)}`, {
+            const response = await fetch(`https://controlefinanceiro-wandering-glitter-7368.fly.dev/usuario/redefinir-senha?senha=${encodeURIComponent(senha)}&confirmarSenha=${encodeURIComponent(confirmarSenha)}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

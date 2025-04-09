@@ -37,7 +37,7 @@ export default function CadastroUsuario() {
 
         const token = localStorage.getItem('token');
 
-        fetch("http://192.168.18.22:8080/usuario/cadastrar", {
+        fetch("https://controlefinanceiro-wandering-glitter-7368.fly.dev/usuario/cadastrar", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

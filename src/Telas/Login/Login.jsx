@@ -46,7 +46,7 @@ export default function Login() {
         console.log("Clicou no botão");
 
         setLoading(true);
-        fetch("http://192.168.18.22:8080/usuario/login", {
+        fetch("https://controlefinanceiro-wandering-glitter-7368.fly.dev/usuario/login", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -84,7 +84,7 @@ export default function Login() {
                     localStorage.setItem("token", token);
                     localStorage.setItem("email", JSON.stringify(email));
  
-                    fetch(`http://192.168.18.22:8080/usuario/id-por-email?email=${encodeURIComponent(email)}`, {
+                    fetch(`https://controlefinanceiro-wandering-glitter-7368.fly.dev/usuario/id-por-email?email=${encodeURIComponent(email)}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',

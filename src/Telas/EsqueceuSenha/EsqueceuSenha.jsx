@@ -20,7 +20,7 @@ export default function EsqueceuSenha() {
         setLoading(true);
 
         try {
-            const response = await fetch(`http://192.168.18.22:8080/usuario/recuperar-senha?email=${encodeURIComponent(email)}`, {
+            const response = await fetch(`https://controlefinanceiro-wandering-glitter-7368.fly.dev/usuario/recuperar-senha?email=${encodeURIComponent(email)}`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json"
