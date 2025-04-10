@@ -445,7 +445,7 @@ const Contas = () => {
               <option value="Mensal">Mensal</option>
               <option value="Extra">Extra</option>
             </select>
-            <label>{tipoConta === "Mensal" ? "Data vencimento" : "Data pagamento"}</label>
+            <label className='input'>{tipoConta === "Mensal" ? "Data vencimento" : "Data pagamento"}</label>
             <input
               type="date"
               placeholder="Data de Vencimento"

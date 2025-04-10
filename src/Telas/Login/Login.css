@@ -14,6 +14,10 @@ html, body {
     padding: 0;
 }
 
+.success-panel{
+    color: white;
+}
+
 .close-button {
     margin-top: 10px;
     padding: 5px 15px;
