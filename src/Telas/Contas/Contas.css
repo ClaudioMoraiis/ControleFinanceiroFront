@@ -1,198 +1,91 @@
-  html,
-  body {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    touch-action: none;
-  }
-
   .contas-container {
-    width: 90vw;
-    min-width: 320px;
-    max-width: 800px;
-    height: 100vh;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    font-family: 'Arial', sans-serif;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow: hidden;
-    position: relative;
     box-sizing: border-box;
-  }
-
-  .div-datas {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-    margin: 20px 0;
-    gap: 10px;
-  }
-
-  .inptData{
-    width: 30%;
-    border-radius: 5px;
-    border: 1px solid #ccc;  
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .inptData:focus{
-    outline: none;
-  }
-
-  .input-error {
-    border: 1px solid #f44336;
-  }
-
-  .input-error:focus {
-    border-color: #f44336;
-    box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.2);
-  }
-
-  .error-message {
-    color: #f44336;
-    font-size: 12px;
-    margin: -5px 0 10px 0;
-    text-align: left;
   }
 
   h2 {
     text-align: center;
-    color: #333;
     margin-bottom: 20px;
   }
 
+  .div-datas {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .div-datas label,
+  .div-datas input {
+    font-size: 16px;
+  }
+
   .input-container {
+    width: 100%;
+    text-align: center;
     margin-bottom: 20px;
   }
 
   .input {
     width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
+    max-width: 400px;
+    padding: 8px;
+    margin: 5px auto;
     box-sizing: border-box;
-    background-color: #fff;
-    transition: all 0.3s ease;
-  }
-
-  .input:focus {
-    outline: none;
+    font-size: 16px;
   }
 
   .contas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
     margin-bottom: 20px;
-    flex-grow: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    touch-action: pan-y;
-    position: relative;
-    padding-right: 5px;
-  }
-
-  .contas-list::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .contas-list::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-  }
-
-  .contas-list::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-  }
-
-  .contas-list::-webkit-scrollbar-thumb:hover {
-    background: #555;
   }
 
   .conta-item {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    padding: 10px;
-    margin: 5px 0;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     flex-wrap: wrap;
-    width: 100%;
-    box-sizing: border-box;
+  }
+
+  .conta-info {
+    flex: 1;
+    min-width: 250px;
   }
 
   .conta-buttons {
     display: flex;
     gap: 10px;
-  }
-
-  .edit-button {
-    background-color: #4CAF50;
-  }
-
-  .delete-button {
-    background-color: #f44336;
-  }
-
-  .conta-info {
-    font-size: 14px;
-    color: #555;
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-wrap: break-word;
-  }
-
-  .conta-info strong {
-    color: #333;
-  }
-
-  .no-results {
-    color: #888;
-    font-style: italic;
-    text-align: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
   }
 
   .button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin: 20px 0;
+    text-align: center;
+    margin-bottom: 30px;
   }
 
-  .add-button {
-    width: 50%;
-    padding: 14px;
-    background: rgba(0, 0, 0, 0.822);
+  .button {
+    background-color: black;
     color: white;
     border: none;
-    font-size: 16px;
-    border-radius: 8px;
+    padding: 10px 18px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 16px;
   }
 
-  .add-button:hover {
-    background-color: #45a049;
-  }
-
-  body.no-scroll {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-    height: 100%;
+  .button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
   }
 
   .painel-container {
@@ -201,102 +94,40 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0,0,0,0.5);
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 1000;
-    overflow: hidden;
-    touch-action: none;
+    justify-content: center;
+    padding: 10px;
+    box-sizing: border-box;
   }
 
   .painel {
-    background-color: #fff;
+    background: #fff;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
     width: 90%;
-    max-width: 350px;
-    max-height: 80vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    touch-action: pan-y;
-    margin: 0 auto;
-    position: relative;
+    max-width: 500px;
+    box-sizing: border-box;
+  }
+
+  .painel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
   }
 
   .painel h3 {
-    margin-bottom: 20px;
     text-align: center;
-    color: #333;
+    margin-bottom: 20px;
   }
 
   .painel-buttons {
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
     margin-top: 20px;
-  }
-
-  .button {
-    width: 48%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  .button:hover {
-    opacity: 0.9;
-  }
-
-  #button {
-    background: rgba(0, 0, 0, 0.822);
-  }
-
-  .button {
-    background: rgba(0, 0, 0, 0.822);
-    color: white;
-  }
-
-  .button:hover {
-    background: rgb(29, 28, 28);
-  }
-
-  @media (max-width: 600px) {
-    .contas-container {
-      width: 70vw;
-      height: 70vh;
-    }
-
-    .input,
-    .button {
-      font-size: 14px;
-    }
-
-    label {
-      font-size: 14px;
-    }
-
-    .painel {
-      width: 70vw;
-      max-width: 350px;
-      height: 50vh;
-    }
-
-    #data {
-      width: 70vw;
-    }
-
-    .div-datas {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
   }
 
   .success-panel-overlay {
@@ -305,92 +136,91 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 1100;
+    justify-content: center;
   }
 
   .success-panel {
-    background-color: white;
-    border-radius: 8px;
-    padding: 25px;
-    text-align: center;
-    max-width: 300px;
-    width: 90%;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    animation: fadeInOut 2.5s ease-in-out;
-  }
-
-  @keyframes fadeInOut {
-    0% {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-
-    15% {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    85% {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    100% {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-  }
-
-  .success-icon {
-    background-color: #4CAF50;
+    background: #28a745;
     color: white;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 25px;
-    margin: 0 auto 15px;
+    padding: 20px;
+    border-radius: 4px;
+    text-align: center;
+    box-sizing: border-box;
   }
 
-  .success-panel h3 {
-    color: #333;
+  .error-message {
+    color: red;
+    font-size: 14px;
     margin-bottom: 10px;
-    font-size: 18px;
   }
 
-  .success-animation {
-    width: 100%;
-    height: 4px;
-    background-color: #e0e0e0;
-    border-radius: 2px;
-    overflow: hidden;
-    position: relative;
-    margin-top: 20px;
-  }
-
-  .success-animation::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #4CAF50;
-    animation: progress 2.5s linear;
-  }
-
-  @keyframes progress {
-    0% {
-      width: 0%;
+  @media (max-width: 768px) {
+    .div-datas {
+      flex-direction: column;
+      align-items: stretch;
     }
 
-    100% {
+    .conta-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .conta-buttons {
+      justify-content: center;
       width: 100%;
+    }
+
+    .painel-buttons {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .input, .button {
+      font-size: 14px;
+      padding: 8px;
+    }
+
+    .div-datas label,
+    .div-datas input {
+      font-size: 14px;
+    }
+
+    .conta-info {
+      min-width: 180px;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .contas-container {
+      padding: 40px 60px;
+      background-color: #f7f7f7;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+
+    .div-datas {
+      max-width: 600px;
+      margin: 0 auto 20px;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .input-container {
+      max-width: 600px;
+      margin: 0 auto 20px;
+    }
+
+    .conta-item {
+      padding: 20px;
+    }
+
+    .painel {
+      padding: 30px;
     }
   }

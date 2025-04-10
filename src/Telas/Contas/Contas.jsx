@@ -33,8 +33,7 @@ const Contas = () => {
   };
 
   const handleTipoContaChange = (event) => {
-    const novoTipo = event.target.value;
-    setTipoConta(novoTipo);
+    setTipoConta(event.target.value);
   };
 
   const handleBuscaChange = (event) => setBusca(event.target.value);
@@ -68,9 +67,7 @@ const Contas = () => {
 
   const formatarData = (data, formato) => {
     if (!data) return "";
-
     let partes;
-
     if (data.includes("-")) {
       partes = data.split("-");
       if (partes.length !== 3) return data;
@@ -84,32 +81,26 @@ const Contas = () => {
         return `${partes[2]}-${partes[1]}-${partes[0]}`;
       }
     }
-
     return data;
   };
 
   const validarCampos = () => {
     let valido = true;
-
     setErroNome('');
     setErroValor('');
     setErroData('');
-
     if (!nomeConta.trim()) {
       setErroNome('Por favor, preencha o nome da conta.');
       valido = false;
     }
-
     if (!valorConta.trim()) {
       setErroValor('Por favor, informe o valor da conta.');
       valido = false;
     }
-
     if (!dataConta.trim()) {
       setErroData('Por favor, selecione uma data.');
       valido = false;
     }
-
     return valido;
   };
 
@@ -125,7 +116,6 @@ const Contas = () => {
     setCarregando(true);
     const dataFormatada = formatarData(dataConta, "yyyy-MM-dd");
     const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
-
     fetch("https://controlefinanceiro-wandering-glitter-7368.fly.dev/contas/cadastrar", {
       method: "POST",
       headers: {
@@ -146,7 +136,6 @@ const Contas = () => {
         }
         const text = await response.text();
         console.log("Sucesso:", text);
-
         handleBuscarConta();
         showSuccess("Conta inserida com sucesso!");
       })
@@ -164,7 +153,6 @@ const Contas = () => {
       console.error("ID da conta não fornecido para exclusão");
       return;
     }
-
     setCarregando(true);
     fetch(`https://controlefinanceiro-wandering-glitter-7368.fly.dev/contas/deletar?id=${encodeURIComponent(con_id)}`, {
       method: "DELETE",
@@ -179,7 +167,6 @@ const Contas = () => {
         }
         const text = await response.text();
         console.log("Sucesso:", text);
-
         handleBuscarConta();
         showSuccess("Conta excluída com sucesso!");
       })
@@ -197,11 +184,9 @@ const Contas = () => {
       console.error("ID da conta não fornecido para alteração");
       return;
     }
-
     setCarregando(true);
     const dataFormatada = formatarData(dataConta, "yyyy-MM-dd");
     const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
-
     fetch("https://controlefinanceiro-wandering-glitter-7368.fly.dev/contas/alterar", {
       method: "PUT",
       headers: {
@@ -223,7 +208,6 @@ const Contas = () => {
         }
         const text = await response.text();
         console.log("Sucesso:", text);
-
         handleBuscarConta();
         showSuccess("Conta alterada com sucesso!");
       })
@@ -240,40 +224,38 @@ const Contas = () => {
     if (!validarCampos()) {
       return;
     }
-
     if (alterando) {
       alterarConta();
       setAlterando(false);
     } else {
       adicionarConta();
     }
-
     setNomeConta("");
     setValorConta("");
     setTipoConta("Mensal");
     setDataConta("");
     setMostrarPainel(false);
   };
-    const handleBuscarConta = () => {
-      setCarregando(true);
-      const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
-      console.log("ID do usuário:", idUsuario);
 
-      fetch(`https://controlefinanceiro-wandering-glitter-7368.fly.dev/contas/listar-contas-por-usuario?idUsuario=${encodeURIComponent(idUsuario)}&detalhado=true`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          "Authorization": `Bearer ${localStorage.getItem("token")}`
-        }
-      })
+  const handleBuscarConta = () => {
+    setCarregando(true);
+    const idUsuario = JSON.parse(localStorage.getItem('idUsuario')) || 1;
+    console.log("ID do usuário:", idUsuario);
+    fetch(`https://controlefinanceiro-wandering-glitter-7368.fly.dev/contas/listar-contas-por-usuario?idUsuario=${encodeURIComponent(idUsuario)}&detalhado=true`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      }
+    })
       .then(async (response) => {
         if (!response.ok) {
           const erroTexto = await response.text();
           console.error("Erro na resposta da API:", erroTexto);
           throw new Error("Erro ao buscar contas");
         }
-        return response.json(); // Aqui você espera um JSON real
+        return response.json();
       })      
       .then((data) => {
         console.log("Resposta da API:", data);
@@ -284,15 +266,16 @@ const Contas = () => {
           setContas([]);
         }
       })      
-        .catch((error) => {
-          console.error("Erro ao buscar contas:", error);
-          alert("Erro ao buscar contas. Por favor, recarregue a página.");
-          setContas([]);
-        })
-        .finally(() => {
-          setCarregando(false);
-        });
-    };
+      .catch((error) => {
+        console.error("Erro ao buscar contas:", error);
+        alert("Erro ao buscar contas. Por favor, recarregue a página.");
+        setContas([]);
+      })
+      .finally(() => {
+        setCarregando(false);
+      });
+  };
+
   const handleLimparCampo = () => {
     setNomeConta('');
     setValorConta('');
@@ -403,6 +386,7 @@ const Contas = () => {
                 <button
                   onClick={() => handleAlterarConta(index)}
                   className="button edit-button"
+                  id='alterar'
                 >
                   Alterar
                 </button>
